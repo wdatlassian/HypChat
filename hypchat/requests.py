@@ -335,6 +335,7 @@ class Requests(requests.sessions.Session):
 		return kw
 	
 	def request(self, method, url, **kwargs):
+		kwargs['verify'] = False
 		rv = super(Requests, self).request(method, url, **self._kw(kwargs))
 		# Raise one of our specific errors
 		if rv.status_code in _http_errors:

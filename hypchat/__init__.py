@@ -71,12 +71,13 @@ class _requests(Requests):
 __all__ = ('HypChat',)
 
 class HypChat(object):
-	def __init__(self, token):
+	def __init__(self, token=None, server='https://api.hipchat.com/v2/'):
 		self._requests = _requests(auth=BearerAuth(token))
-		self.capabilities = Linker('https://api.hipchat.com/v2/capabilities', _requests=self._requests)
-		self.emoticons = Linker('https://api.hipchat.com/v2/emoticon', _requests=self._requests)
-		self.rooms = Linker('https://api.hipchat.com/v2/room', _requests=self._requests)
-		self.users = Linker('https://api.hipchat.com/v2/user', _requests=self._requests)
+		self.server = server
+		self.capabilities = Linker(self.server+'capabilities', _requests=self._requests)
+		self.emoticons = Linker(self.server+'emoticon', _requests=self._requests)
+		self.rooms = Linker(self.server+'room', _requests=self._requests)
+		self.users = Linker(self.server+'user', _requests=self._requests)
 
 	def fromurl(self, url):
 		return Linker(url, _requests=self._requests)()
@@ -115,10 +116,10 @@ class HypChat(object):
 		return Linker._obj_from_text(resp.text, self._requests)
 
 	def get_room(self, id_or_name):
-		return self.fromurl('https://api.hipchat.com/v2/room/%s' % id_or_name)
+		return self.fromurl(self.server+'room/{}'.format(id_or_name))
 
 	def get_user(self, id_or_email):
-		return self.fromurl('https://api.hipchat.com/v2/user/%s' % id_or_email)
+		return self.fromurl(self.server+'user/{}'.format(id_or_email))
 
 	def get_emoticon(self, id_or_shortcut):
-		return self.fromurl('https://api.hipchat.com/v2/emoticon/%s' % id_or_shortcut)
+		return self.fromurl(self.server+'emoticon/{}'.format(id_or_shortcut))
